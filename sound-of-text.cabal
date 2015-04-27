@@ -1,11 +1,9 @@
 Name:                sound-of-text
 Version:             0.1
-Synopsis:            Project Synopsis Here
-Description:         Project Description Here
-License:             AllRightsReserved
-Author:              Author
-Maintainer:          maintainer@example.com
-Stability:           Experimental
+License:             MIT
+License-File:        LICENSE
+Author:              Nick Pierson
+Maintainer:          nick.c.pierson@gmail.com
 Category:            Web
 Build-type:          Simple
 Cabal-version:       >=1.2
