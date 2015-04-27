@@ -11,14 +11,22 @@ main = quickHttpServe site
 
 site :: Snap ()
 site =  ifTop (writeText "Coming soon!")
-    <|> route [ ("sounds", sounds) ]
+    <|> route [ ("sounds",     sounds)
+              , ("sounds/:id", sound )
+              ]
 
 sounds :: Snap ()
-sounds =  method GET  hearSound
+sounds =  method GET  indexSounds
       <|> method POST createSound
 
-hearSound :: Snap ()
-hearSound = undefined
+indexSounds :: Snap ()
+indexSounds = undefined
 
 createSound :: Snap ()
 createSound = undefined
+
+sound :: Snap ()
+sound = method GET hearSound
+
+hearSound :: Snap ()
+hearSound = undefined
