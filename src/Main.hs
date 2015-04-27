@@ -1,24 +1,24 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import           Control.Applicative
-import           Snap.Core
-import           Snap.Util.FileServe
-import           Snap.Http.Server
+import Snap.Core (ifTop, writeText, route, method)
+import Snap.Core (Snap, Method(..))
+import Snap.Http.Server (quickHttpServe)
+import Control.Applicative ((<|>))
 
 main :: IO ()
 main = quickHttpServe site
 
 site :: Snap ()
-site =
-    ifTop (writeBS "hello world") <|>
-    route [ ("foo", writeBS "bar")
-          , ("echo/:echoparam", echoHandler)
-          ] <|>
-    dir "static" (serveDirectory ".")
+site =  ifTop (writeText "Coming soon!")
+    <|> route [ ("sounds", sounds) ]
 
-echoHandler :: Snap ()
-echoHandler = do
-    param <- getParam "echoparam"
-    maybe (writeBS "must specify echo/param in URL")
-          writeBS param
+sounds :: Snap ()
+sounds =  method GET  hearSound
+      <|> method POST createSound
+
+hearSound :: Snap ()
+hearSound = undefined
+
+createSound :: Snap ()
+createSound = undefined
