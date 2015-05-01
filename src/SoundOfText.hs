@@ -2,8 +2,9 @@
 module Main where
 
 import Snap.Core (ifTop, writeText, writeBS, route, method, getPostParam, finishWith)
-import Snap.Core (modifyResponse, setResponseStatus, addHeader, getResponse)
+import Snap.Core (modifyResponse, setResponseStatus, addHeader, getResponse, dir)
 import Snap.Core (Snap, Method(..), MonadSnap)
+import Snap.Util.FileServe (serveDirectory)
 import Snap.Http.Server (quickHttpServe)
 import Control.Applicative ((<|>))
 import Control.Monad (when)
@@ -13,7 +14,7 @@ import Data.ByteString as B
 import Data.String (fromString)
 import Text.JSON (toJSString, makeObj, encode)
 import Text.JSON (JSValue(..))
-import SoundManager (getSoundPath)
+import SoundManager (getSoundPath, soundsDir)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as E
 
@@ -22,9 +23,8 @@ main = quickHttpServe site
 
 site :: Snap ()
 site =  ifTop (writeText "Coming soon!")
-    <|> route [ ("sounds",     sounds)
-              , ("sounds/:id", sound )
-              ]
+    <|> route [ ("sounds", sounds) ]
+    <|> dir "static" serveStatic
 
 sounds :: Snap ()
 sounds =  method GET  indexSounds
@@ -43,11 +43,8 @@ createSound = do
     when (isNothing path) $ finishEarly 400 "Unable to retrieve sound!"
     writeBS . fromString . createSoundSuccessJSON . toString $ fromJust path
 
-sound :: Snap ()
-sound = method GET hearSound
-
-hearSound :: Snap ()
-hearSound = undefined
+serveStatic :: Snap ()
+serveStatic = dir "sounds" (serveDirectory soundsDir)
 
 -- helper methods
 

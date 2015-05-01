@@ -1,5 +1,6 @@
 module SoundManager
 ( getSoundPath
+, soundsDir
 ) where
 
 import Network.HTTP.Client
