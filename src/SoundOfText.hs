@@ -3,11 +3,14 @@ module Main where
 
 import Snap.Core (ifTop, writeText, writeBS, route, method, getPostParam, finishWith)
 import Snap.Core (modifyResponse, setResponseStatus, addHeader, getResponse)
-import Snap.Core (Snap, Method(..))
+import Snap.Core (Snap, Method(..), MonadSnap)
 import Snap.Http.Server (quickHttpServe)
 import Control.Applicative ((<|>))
 import Control.Monad (when)
-import Data.Maybe (isNothing)
+import Control.Monad.IO.Class (liftIO)
+import Data.Maybe (isNothing, fromJust)
+import SoundManager (getSoundPath)
+import Data.ByteString as B
 
 main :: IO ()
 main = quickHttpServe site
@@ -31,7 +34,10 @@ createSound = do
     text <- getPostParam "text"
     when (isNothing lang) $ finishEarly 400 "Parameter 'lang' missing!"
     when (isNothing text) $ finishEarly 400 "Parameter 'text' missing!"
-    writeBS "Hello, world!\n"
+    filePath <- liftIO $ getSoundPath (fromJust lang) (fromJust text)
+    when (isNothing filePath) $ finishEarly 400 "Unable to retrieve sound!"
+    writeBS $ fromJust filePath
+
 
 sound :: Snap ()
 sound = method GET hearSound
@@ -39,8 +45,9 @@ sound = method GET hearSound
 hearSound :: Snap ()
 hearSound = undefined
 
+finishEarly :: (MonadSnap m) => Int -> ByteString -> m b
 finishEarly code str = do
-  modifyResponse $ setResponseStatus code str
-  modifyResponse $ addHeader "Content-Type" "text/plain"
-  writeBS str
-  getResponse >>= finishWith
+    modifyResponse $ setResponseStatus code str
+    modifyResponse $ addHeader "Content-Type" "text/plain"
+    writeBS str
+    getResponse >>= finishWith
