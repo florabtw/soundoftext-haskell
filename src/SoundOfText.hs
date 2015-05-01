@@ -9,8 +9,13 @@ import Control.Applicative ((<|>))
 import Control.Monad (when)
 import Control.Monad.IO.Class (liftIO)
 import Data.Maybe (isNothing, fromJust)
-import SoundManager (getSoundPath)
 import Data.ByteString as B
+import Data.String (fromString)
+import Text.JSON (toJSString, makeObj, encode)
+import Text.JSON (JSValue(..))
+import SoundManager (getSoundPath)
+import qualified Data.Text as T
+import qualified Data.Text.Encoding as E
 
 main :: IO ()
 main = quickHttpServe site
@@ -34,10 +39,9 @@ createSound = do
     text <- getPostParam "text"
     when (isNothing lang) $ finishEarly 400 "Parameter 'lang' missing!"
     when (isNothing text) $ finishEarly 400 "Parameter 'text' missing!"
-    filePath <- liftIO $ getSoundPath (fromJust lang) (fromJust text)
-    when (isNothing filePath) $ finishEarly 400 "Unable to retrieve sound!"
-    writeBS $ fromJust filePath
-
+    path <- liftIO $ getSoundPath (fromJust lang) (fromJust text)
+    when (isNothing path) $ finishEarly 400 "Unable to retrieve sound!"
+    writeBS . fromString . createSoundSuccessJSON . toString $ fromJust path
 
 sound :: Snap ()
 sound = method GET hearSound
@@ -45,9 +49,30 @@ sound = method GET hearSound
 hearSound :: Snap ()
 hearSound = undefined
 
+-- helper methods
+
+createSoundSuccessJSON :: String -> String
+createSoundSuccessJSON path =
+    let pathJSString = toJSString path
+        object       = [ ("success", JSBool True)
+                       , ("path",    JSString pathJSString)
+                       ]
+    in  encode $ makeObj object
+
+errorJSON :: String -> String
+errorJSON m =
+    let messageJSString = toJSString m
+        object          = [ ("success", JSBool False)
+                          , ("message", JSString messageJSString)
+                          ]
+    in encode $ makeObj object
+
 finishEarly :: (MonadSnap m) => Int -> ByteString -> m b
 finishEarly code str = do
     modifyResponse $ setResponseStatus code str
     modifyResponse $ addHeader "Content-Type" "text/plain"
-    writeBS str
+    writeBS . fromString . errorJSON $ toString str
     getResponse >>= finishWith
+
+toString :: ByteString -> String
+toString = T.unpack . E.decodeUtf8
