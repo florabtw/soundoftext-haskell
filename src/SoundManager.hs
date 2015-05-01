@@ -13,7 +13,7 @@ import qualified Data.Text as T
 import qualified Data.Text.Encoding as E
 
 soundsDir :: String
-soundsDir = "/home/soundoftext/sounds"
+soundsDir = "static/sounds"
 
 soundsExt :: String
 soundsExt = "mp3"
