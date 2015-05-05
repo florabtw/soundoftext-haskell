@@ -1,19 +1,62 @@
-html {
-  height: 100%;
+body {
+  background: #008B8B;
+  margin: 0;
+  padding: 0;
 }
 
-body {
-  height: 100%;
+h1,h2,h3,h4,h5,h6 {
+  color: #1A6868;
+}
+
+input[type=text], select {
+  box-sizing: border-box;
+  display: block;
   margin: 0;
+  padding: 5px;
+  width: 100%;
+  height: 2.5em;
+  line-height: 2.5em;
+  font-size: 1em;
+  border: 1px solid #BBB;
+  border-radius: 5px;
+}
+
+input[type=submit] {
+  box-sizing: border-box;
+  display: block;
+  margin: .5em 0;
+  width: 100%;
+  height: 2.5em;
+  font-weight: bold;
+  font-size: 1em;
+  background: #1A6868;
+  color: #FFF;
+  border: none;
+  border-radius: 5px;
+}
+
+.field {
+  margin: .2em 0;
+}
+
+.container {
   display: flex;
   flex-direction: column;
-  background: #008B8B;
   justify-content: center;
   align-items: center;
 }
 
+.content {
+  text-align: justify;
+}
+
+.content h1 {
+  text-align: center;
+}
+
 .wrapped {
   margin: 5px;
-  padding: 10px;
+  padding: 0 10px;
   background: #FFF;
+  border-radius: 5px;
 }
