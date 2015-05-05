@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Snap.Core (ifTop, writeText, writeBS, route, method, getPostParam, finishWith)
+import Snap.Core (ifTop, writeBS, route, method, getPostParam, finishWith)
 import Snap.Core (modifyResponse, setResponseStatus, addHeader, getResponse, dir)
 import Snap.Core (Snap, Method(..), MonadSnap)
-import Snap.Util.FileServe (serveDirectory)
+import Snap.Util.FileServe (serveDirectory, serveFile)
 import Snap.Http.Server (quickHttpServe)
 import Control.Applicative ((<|>))
 import Control.Monad (when)
@@ -22,7 +22,7 @@ main :: IO ()
 main = quickHttpServe site
 
 site :: Snap ()
-site =  ifTop (writeText "Coming soon!")
+site =  ifTop (serveFile "templates/index.html")
     <|> route [ ("sounds", sounds) ]
     <|> dir "static" serveStatic
 
