@@ -1,8 +1,62 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Sound of Text | Download Google Translate MP3 Audio</title>
+    <meta charset="UTF-8">
   </head>
   <body>
-    Hello, World!
+    <div class="wrapped content">
+      <h1>
+        Sound of Text
+      </h1>
+      <p>
+        Allowing you to download the MP3 audio from
+        <a href="https://translate.google.com">Google Translate</a>.
+        Simply type what you want to hear - up to 100 characters - and hit submit.
+      </p>
+      <form action="/sounds" method="post">
+        <input id="text" type="text" />
+        <select id="select-lang">
+          <option value="en">English</option>
+        </select>
+        <input id="submit-text" type="submit" value="Submit" />
+      </form>
+    </div>
+    <div class="wrapped results">
+      <div class="results-header">
+        <h3>Results</h3>
+        <button>Save all</button>
+      </div>
+      <table>
+        <tr class="result">
+          <td class="result-lang">
+            English
+          </td>
+          <td class="result-text">
+            hello
+          </td>
+          <td class="result-play">
+            <button>Play</button>
+          </td>
+          <td class="result-save">
+            <button>Save</button>
+          </td>
+        </tr>
+        <tr class="result">
+          <td class="result-lang">
+            English
+          </td>
+          <td class="result-text">
+            some really long text that will hopefully mess up layout
+          </td>
+          <td class="result-play">
+            <button>Play</button>
+          </td>
+          <td class="result-save">
+            <button>Save</button>
+          </td>
+        </tr>
+      </table>
+    </div>
   </body>
 </html>
