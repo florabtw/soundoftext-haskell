@@ -1,0 +1,19 @@
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background: #008B8B;
+  justify-content: center;
+  align-items: center;
+}
+
+.wrapped {
+  margin: 5px;
+  padding: 10px;
+  background: #FFF;
+}

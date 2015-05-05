@@ -44,7 +44,8 @@ createSound = do
     writeBS . fromString . createSoundSuccessJSON . toString $ fromJust path
 
 serveStatic :: Snap ()
-serveStatic = dir "sounds" (serveDirectory soundsDir)
+serveStatic =  dir "sounds"      (serveDirectory soundsDir)
+           <|> dir "stylesheets" (serveDirectory "static/stylesheets")
 
 -- helper methods
 
