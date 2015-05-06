@@ -8,7 +8,7 @@
   </head>
   <body>
     <div class="container">
-      <div class="wrapped content">
+      <div class="wrapped">
         <h1>
           Sound of Text
         </h1>
@@ -31,41 +31,33 @@
           <input id="submit-text" type="submit" value="Submit" />
         </form>
       </div>
-      <div class="wrapped results">
+      <div class="wrapped">
         <div class="results-header">
-          <h3>Results</h3>
+          <h1>Results</h1>
           <button>Save all</button>
         </div>
-        <table>
-          <tr class="result">
-            <td class="result-lang">
-              English
-            </td>
-            <td class="result-text">
-              hello
-            </td>
-            <td class="result-play">
+        <ol class="results">
+          <li class="result">
+            <div class="result-content">
+              <div class="result-text">Hello</div>
+              <div class="result-lang">English</div>
+            </div>
+            <div class="result-actions">
               <button>Play</button>
-            </td>
-            <td class="result-save">
               <button>Save</button>
-            </td>
-          </tr>
-          <tr class="result">
-            <td class="result-lang">
-              English
-            </td>
-            <td class="result-text">
-              some really long text that will hopefully mess up layout
-            </td>
-            <td class="result-play">
+            </div>
+          </li>
+          <li class="result">
+            <div class="result-content">
+              <div class="result-text">Some really long text that will hopefully mess up layout</div>
+              <div class="result-lang">English</div>
+            </div>
+            <div class="result-actions">
               <button>Play</button>
-            </td>
-            <td class="result-save">
               <button>Save</button>
-            </td>
-          </tr>
-        </table>
+            </div>
+          </li>
+        </div>
       </div>
     </div>
   </body>
