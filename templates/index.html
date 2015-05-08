@@ -7,57 +7,59 @@
     <link rel="stylesheet" href="/static/stylesheets/index.css">
   </head>
   <body>
-    <div class="container">
-      <div class="wrapped content">
-        <h1>
-          Sound of Text
-        </h1>
-        <p>
-          Allowing you to download the MP3 audio from
-          <a href="https://translate.google.com">Google Translate</a>.
-          Simply type what you want to hear - up to 100 characters - and hit submit.
-        </p>
-        <form action="/sounds" method="post">
-          <div class="field">
-            <label for="text">Text:</label>
-            <input name="text" type="text" />
-          </div>
-          <div class="field">
-            <label for="lang">Language:</label>
-            <select name="lang">
-              <option value="en">English</option>
-            </select>
-          </div>
-          <input id="submit-text" type="submit" value="Submit" />
-        </form>
-      </div>
-      <div class="wrapped">
-        <div class="results-header">
-          <h1>Results</h1>
-          <button>Save all</button>
+    <div class="outer">
+      <div class="inner">
+        <div class="wrapped content">
+          <h1>
+            Sound of Text
+          </h1>
+          <p>
+            Allowing you to download the MP3 audio from
+            <a href="https://translate.google.com">Google Translate</a>.
+            Simply type what you want to hear - up to 100 characters - and hit submit.
+          </p>
+          <form action="/sounds" method="post">
+            <div class="field">
+              <label for="text">Text:</label>
+              <input name="text" type="text" />
+            </div>
+            <div class="field">
+              <label for="lang">Language:</label>
+              <select name="lang">
+                <option value="en">English</option>
+              </select>
+            </div>
+            <input id="submit-text" type="submit" value="Submit" />
+          </form>
         </div>
-        <ol class="results">
-          <li class="result">
-            <div class="result-content">
-              <div class="result-text">Hello</div>
-              <div class="result-lang">English</div>
-            </div>
-            <div class="result-actions">
-              <button>Play</button>
-              <button>Save</button>
-            </div>
-          </li>
-          <li class="result">
-            <div class="result-content">
-              <div class="result-text">Some really long text that will hopefully mess up layout</div>
-              <div class="result-lang">English</div>
-            </div>
-            <div class="result-actions">
-              <button>Play</button>
-              <button>Save</button>
-            </div>
-          </li>
-        </ol>
+        <div class="wrapped">
+          <div class="results-header">
+            <h1>Results</h1>
+            <button>Save all</button>
+          </div>
+          <ol class="results">
+            <li class="result">
+              <div class="result-content">
+                <div class="result-text">Hello</div>
+                <div class="result-lang">English</div>
+              </div>
+              <div class="result-actions">
+                <button>Play</button>
+                <button>Save</button>
+              </div>
+            </li>
+            <li class="result">
+              <div class="result-content">
+                <div class="result-text">Some really long text that will hopefully mess up layout</div>
+                <div class="result-lang">English</div>
+              </div>
+              <div class="result-actions">
+                <button>Play</button>
+                <button>Save</button>
+              </div>
+            </li>
+          </ol>
+        </div>
       </div>
     </div>
   </body>

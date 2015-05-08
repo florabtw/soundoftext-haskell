@@ -1,7 +1,11 @@
-body {
-  background: #008B8B;
+html,body {
+  height: 100%;
   margin: 0;
   padding: 0;
+}
+
+body {
+  background: #008B8B;
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -62,11 +66,18 @@ li.result {
   border-radius: 5px;
 }
 
-.container {
+.outer {
+  height: 100%;
+  display: flex;
+  overflow-y: auto;
+}
+
+.inner {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: stretch;
+  margin: auto;
 }
 
 .field {
