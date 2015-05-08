@@ -26,6 +26,15 @@ input[type=text], select {
   border-radius: 5px;
 }
 
+input[type=text]:focus,select:focus {
+  outline: none;
+  border: 1px solid #1A6868;
+}
+
+select {
+  background: white;
+}
+
 input[type=submit] {
   box-sizing: border-box;
   display: block;
@@ -37,6 +46,7 @@ input[type=submit] {
   color: #FFF;
   border: none;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 button {
@@ -48,6 +58,7 @@ button {
   color: #FFF;
   border: none;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 ol.results {
