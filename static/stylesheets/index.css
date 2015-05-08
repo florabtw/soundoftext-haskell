@@ -52,26 +52,7 @@ ol.results {
 
 li.result {
   list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-.result-content {
-  display: inline-block;
-  width: 50%;
-}
-
-.result-actions {
-  display: inline-block;
-  width: 45%;
-}
-
-.result-actions button {
-  width: 48%;
-}
-
-.result-lang {
-  font-size: .6em;
+  padding: 10px 0;
 }
 
 .wrapped {
@@ -110,4 +91,33 @@ li.result {
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-end;
+}
+
+.result {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-top: 1px solid #ddd;
+}
+
+.result-content {
+  width: 55%;
+}
+
+.result-text {
+  word-wrap: break-word;
+}
+
+.result-actions {
+  width: 40%;
+}
+
+.result-actions button {
+  width: 48%;
+}
+
+.result-lang {
+  font-size: .8em;
+  color: #666666;
 }
