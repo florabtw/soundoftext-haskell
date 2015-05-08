@@ -1,3 +1,4 @@
 dist/
 log/
 static/sounds
+*.db
