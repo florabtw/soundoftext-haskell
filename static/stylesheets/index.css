@@ -6,6 +6,7 @@ html,body {
 
 body {
   background: #008B8B;
+  font-family: Arial Unicode MS, Lucida Sans Unicode, sans-serif;
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -28,7 +29,6 @@ input[type=text], select {
 input[type=submit] {
   box-sizing: border-box;
   display: block;
-  margin: .5em 0;
   width: 100%;
   height: 2.5em;
   font-weight: bold;
@@ -112,16 +112,12 @@ li.result {
   border-top: 1px solid #ddd;
 }
 
-.result-content {
-  width: 55%;
-}
 
 .result-text {
   word-wrap: break-word;
 }
 
 .result-actions {
-  width: 40%;
   text-align: right;
 }
 
@@ -135,12 +131,65 @@ li.result {
   color: #666666;
 }
 
-@media (min-width: 650px) {
+@media (max-width: 400px) {
+  .result-content {
+    width: 45%;
+  }
+
+  .result-actions {
+    width: 50%;
+  }
+}
+
+@media (min-width: 401px) {
+  .result-content {
+    width: 55%;
+  }
+
+  .result-actions {
+    width: 40%;
+  }
+}
+
+@media (max-width: 650px) {
+  input[type=submit] {
+    margin: .5em 0;
+  }
+}
+
+@media (min-width: 651px) {
   .container {
     align-items: center;
   }
 
   .wrapped {
     width: 600px;
+  }
+
+  form {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .field:nth-child(1) {
+    width: 53%;
+  }
+
+  .field:nth-child(2) {
+    width: 25%;
+  }
+
+  .field:nth-child(3) {
+    width: 20%;
+  }
+
+  .field {
+    margin: 1em 0;
+  }
+
+  .field label {
+    display: none;
   }
 }
