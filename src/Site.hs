@@ -5,12 +5,14 @@ module Site
 ) where
 
 import Snap.Snaplet (Handler, SnapletInit)
-import Snap.Snaplet (makeSnaplet, nestSnaplet, addRoutes)
+import Snap.Snaplet (makeSnaplet, nestSnaplet, addRoutes, snapletValue, withTop)
 import Snap.Snaplet.Heist (heistInit, render)
-import Snap.Snaplet.SqliteSimple (sqliteInit)
+import Snap.Snaplet.SqliteSimple (sqliteInit, sqliteConn)
 
 import Application (heist, db)
 import Application (App(..))
+
+import Database (createTables, saveSound)
 
 import Snap.Core (writeBS, method, getPostParam, finishWith)
 import Snap.Core (modifyResponse, setResponseStatus, addHeader, getResponse, dir)
@@ -18,6 +20,8 @@ import Snap.Core (Method(..), MonadSnap)
 import Snap.Util.FileServe (serveDirectory)
 
 import Control.Applicative ((<|>))
+import Control.Concurrent (withMVar)
+import Control.Lens ((^#))
 import Control.Monad (when)
 import Control.Monad.IO.Class (liftIO)
 import Data.Maybe (isNothing, fromJust)
@@ -73,6 +77,7 @@ createSound = do
     when (isNothing text) $ finishEarly 400 "Parameter 'text' missing!"
     path <- liftIO $ getSoundPath (fromJust lang) (fromJust text)
     when (isNothing path) $ finishEarly 400 "Unable to retrieve sound!"
+    withTop db $ saveSound (toString $ fromJust lang) (toString $ fromJust text) (toString $ fromJust path)
     writeBS . fromString . createSoundSuccessJSON . toString $ fromJust path
 
 serveStatic :: Handler App App ()
@@ -90,4 +95,8 @@ app = makeSnaplet "app" "Sound of Text" Nothing $ do
     addRoutes routes
     h <- nestSnaplet "" heist $ heistInit "templates"
     d <- nestSnaplet "db" db sqliteInit
+
+    let c = sqliteConn $ d ^# snapletValue
+    liftIO $ withMVar c $ \conn -> createTables conn
+
     return $ App h d

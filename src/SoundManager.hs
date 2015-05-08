@@ -3,7 +3,14 @@ module SoundManager
 , soundsDir
 ) where
 
-import Network.HTTP.Client
+import Database (saveSound)
+import Application (db)
+
+import Snap.Snaplet (withTop)
+
+import Network.HTTP.Client (httpLbs, newManager, defaultManagerSettings)
+import Network.HTTP.Client (parseUrl, responseBody)
+import Network.HTTP.Client (Manager(..))
 import System.FilePath ((</>), (<.>))
 import System.Directory (doesFileExist, createDirectoryIfMissing)
 import Data.Maybe (isNothing)
