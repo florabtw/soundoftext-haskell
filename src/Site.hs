@@ -5,14 +5,15 @@ module Site
 ) where
 
 import Snap.Snaplet (Handler, SnapletInit)
-import Snap.Snaplet (makeSnaplet, nestSnaplet, addRoutes, snapletValue, withTop)
+import Snap.Snaplet (makeSnaplet, nestSnaplet, addRoutes, snapletValue)
 import Snap.Snaplet.Heist (heistInit, render)
 import Snap.Snaplet.SqliteSimple (sqliteInit, sqliteConn)
 
 import Application (heist, db)
 import Application (App(..))
-
-import Database (createTables, saveSound)
+import Database (Sound(..))
+import Database (createTables)
+import SoundManager (soundsDir, findSound)
 
 import Snap.Core (writeBS, method, getPostParam, finishWith)
 import Snap.Core (modifyResponse, setResponseStatus, addHeader, getResponse, dir)
@@ -28,18 +29,17 @@ import Data.Maybe (isNothing, fromJust)
 import Data.String (fromString)
 import Text.JSON (toJSString, makeObj, encode)
 import Text.JSON (JSValue(..))
-import SoundManager (getSoundPath, soundsDir)
 
 import qualified Data.ByteString as B
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as E
 
 ------------------------------------------------------------------------------
-createSoundSuccessJSON :: String -> String
-createSoundSuccessJSON path =
-    let pathJSString = toJSString path
+createSoundSuccessJSON :: Sound -> String
+createSoundSuccessJSON sound =
+    let sId          = fromIntegral $ soundId sound
         object       = [ ("success", JSBool True)
-                       , ("path",    JSString pathJSString)
+                       , ("id",      JSRational False sId)
                        ]
     in  encode $ makeObj object
 
@@ -75,10 +75,9 @@ createSound = do
     text <- getPostParam "text"
     when (isNothing lang) $ finishEarly 400 "Parameter 'lang' missing!"
     when (isNothing text) $ finishEarly 400 "Parameter 'text' missing!"
-    path <- liftIO $ getSoundPath (fromJust lang) (fromJust text)
-    when (isNothing path) $ finishEarly 400 "Unable to retrieve sound!"
-    withTop db $ saveSound (toString $ fromJust lang) (toString $ fromJust text) (toString $ fromJust path)
-    writeBS . fromString . createSoundSuccessJSON . toString $ fromJust path
+    sound <- findSound (fromJust lang) (fromJust text)
+    when (isNothing sound) $ finishEarly 400 "Unable to retrieve sound!"
+    writeBS . fromString . createSoundSuccessJSON $ fromJust sound
 
 serveStatic :: Handler App App ()
 serveStatic =  dir "sounds"      (serveDirectory soundsDir)

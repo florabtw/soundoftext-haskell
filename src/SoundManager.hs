@@ -1,19 +1,21 @@
 module SoundManager
-( getSoundPath
-, soundsDir
+( soundsDir
+, findSound
 ) where
 
-import Database (saveSound)
+import Database (Sound(..))
+import Database (saveSound, getSoundByLangTextPair)
+import Application (App(..))
 import Application (db)
 
-import Snap.Snaplet (withTop)
+import Snap.Snaplet (Handler, withTop)
 
 import Network.HTTP.Client (httpLbs, newManager, defaultManagerSettings)
 import Network.HTTP.Client (parseUrl, responseBody)
-import Network.HTTP.Client (Manager(..))
+import Network.HTTP.Client (Manager)
 import System.FilePath ((</>), (<.>))
-import System.Directory (doesFileExist, createDirectoryIfMissing)
-import Data.Maybe (isNothing)
+import System.Directory (createDirectoryIfMissing)
+import Control.Monad.IO.Class (liftIO)
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as B
 import qualified Data.Text as T
@@ -31,37 +33,35 @@ rootUrl = "http://translate.google.com/translate_tts?ie=UTF-8"
 cManager :: IO Manager
 cManager = newManager defaultManagerSettings
 
-getSoundPath :: B.ByteString -> B.ByteString -> IO (Maybe B.ByteString)
-getSoundPath lang text = do
-    filePath <- locateSound lang text
-    if isNothing filePath
-        then downloadSound lang text
-        else return filePath
-
-locateSound :: B.ByteString -> B.ByteString -> IO (Maybe B.ByteString)
-locateSound lang text = do
+findSound :: B.ByteString -> B.ByteString -> Handler App App (Maybe Sound)
+findSound lang text = do
     let langString = toString lang
         textString = toString text
-        absPath    = makeAbsSoundPath langString textString
-        relPath    = makeRelSoundPath langString textString
-    fileExists  <- doesFileExist absPath
-    if fileExists
-      then return . Just $ toBS relPath
-      else return Nothing
+    sounds <- withTop db $ getSoundByLangTextPair langString textString
+    if null sounds
+        then createSound langString textString
+        else return . Just $ head sounds
 
-downloadSound :: B.ByteString -> B.ByteString -> IO (Maybe B.ByteString)
+createSound :: String -> String -> Handler App App (Maybe Sound)
+createSound lang text = do
+    path <- liftIO $ downloadSound lang text
+    withTop db $ saveSound lang text path
+    sounds <- withTop db $ getSoundByLangTextPair lang text
+    if null sounds
+        then return Nothing
+        else return . Just $ head sounds
+
+downloadSound :: String -> String -> IO String
 downloadSound lang text = do
-    let langString = toString lang
-        textString = toString text
-        url        = addTextParam textString . addLangParam langString $ rootUrl
+    let url = addTextParam text . addLangParam lang $ rootUrl
     req <- parseUrl url
     man <- cManager
     res <- httpLbs req man
-    let absPath = makeAbsSoundPath langString textString
-        relPath = makeRelSoundPath langString textString
-    createDirectoryIfMissing True $ soundsDir </> langString
+    let absPath = makeAbsSoundPath lang text
+        relPath = makeRelSoundPath lang text
+    createDirectoryIfMissing True $ soundsDir </> lang
     L.writeFile absPath $ responseBody res
-    return . Just $ toBS relPath
+    return relPath
 
 makeAbsSoundPath :: String -> String -> String
 makeAbsSoundPath lang text = soundsDir </> makeRelSoundPath lang text
@@ -71,9 +71,6 @@ makeRelSoundPath lang text = lang </> text <.> soundsExt
 
 toString :: B.ByteString -> String
 toString = T.unpack . E.decodeUtf8
-
-toBS :: String -> B.ByteString
-toBS = E.encodeUtf8 . T.pack
 
 addParam :: String -> String -> String -> String
 addParam k v s = s ++ "&" ++ k ++ "=" ++ v

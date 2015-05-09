@@ -1,15 +1,18 @@
 {-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 
 module Database
-( createTables
+( Sound(..)
+, createTables
 , saveSound
+, getSoundByLangTextPair
 ) where
 
 import Application (App(..))
 import Snap.Snaplet (Handler)
-import Snap.Snaplet.SqliteSimple (Only(..), Sqlite(..))
-import Snap.Snaplet.SqliteSimple (execute)
+import Snap.Snaplet.SqliteSimple (Only(..), Sqlite(..), FromRow(..))
+import Snap.Snaplet.SqliteSimple (query, execute, field)
 import Control.Monad (unless)
+import Control.Applicative ((<$>),(<*>))
 import qualified Database.SQLite.Simple as S
 import qualified Data.Text as T
 
@@ -18,6 +21,9 @@ data Sound = Sound { soundId   :: Int
                    , soundText :: String
                    , soundPath :: String
                    } deriving (Show)
+
+instance FromRow Sound where
+    fromRow = Sound <$> field <*> field <*> field <*> field
 
 tableExists :: S.Connection -> String -> IO Bool
 tableExists conn name = do
@@ -40,6 +46,10 @@ createTables conn = do
                       , ")"
                       ]
             )
+
+getSoundByLangTextPair :: String -> String -> Handler App Sqlite [Sound]
+getSoundByLangTextPair lang text =
+    query "SELECT id,lang,text,path FROM sounds WHERE lang = ? AND text = ? " (lang, text)
 
 saveSound :: String -> String -> String -> Handler App Sqlite ()
 saveSound l t p =
