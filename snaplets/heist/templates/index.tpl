@@ -4,6 +4,8 @@
     <title>Sound of Text | Download Google Translate MP3 Audio</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/static/js/index.js"></script>
     <link rel="stylesheet" href="/static/stylesheets/index.css">
   </head>
   <body>
@@ -102,7 +104,7 @@
             <h1>Results</h1>
             <button>Save all</button>
           </div>
-          <ol class="results">
+          <ol class="results" id="results">
           </ol>
         </div>
       </div>

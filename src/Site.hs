@@ -20,7 +20,7 @@ import SoundManager (soundsDir, findSound)
 import Languages (lookupLanguage)
 
 import Snap.Core (writeBS, method, getPostParam, finishWith, getParam)
-import Snap.Core (modifyResponse, setResponseStatus, addHeader, getResponse, dir)
+import Snap.Core (modifyResponse, setResponseStatus, setHeader, getResponse, dir)
 import Snap.Core (Method(..), MonadSnap)
 import Snap.Util.FileServe (serveDirectory)
 
@@ -57,8 +57,8 @@ errorJSON m =
 
 finishEarly :: (MonadSnap m) => Int -> B.ByteString -> m b
 finishEarly code str = do
+    modifyResponse $ setHeader "Content-Type" "application/json"
     modifyResponse $ setResponseStatus code str
-    modifyResponse $ addHeader "Content-Type" "text/plain"
     writeBS . fromString . errorJSON $ toString str
     getResponse >>= finishWith
 
@@ -85,6 +85,7 @@ indexSounds = undefined
 
 createSound :: Handler App App ()
 createSound = do
+    modifyResponse $ setHeader "Content-Type" "application/json"
     lang <- getPostParam "lang"
     text <- getPostParam "text"
     when (isNothing lang) $ finishEarly 400 "Parameter 'lang' missing!"
@@ -108,9 +109,10 @@ showSound = do
 serveStatic :: Handler App App ()
 serveStatic =  dir "sounds"      (serveDirectory soundsDir)
            <|> dir "stylesheets" (serveDirectory "static/stylesheets")
+           <|> dir "js"          (serveDirectory "static/js")
 
 routes :: [(B.ByteString, Handler App App ())]
-routes = [ ("/",            render "index")
+routes = [ ("/",           render "index")
          , ("/sounds",     handleSounds)
          , ("/sounds/:id", handleSound)
          , ("/static",     serveStatic)
