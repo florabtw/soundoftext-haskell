@@ -32,6 +32,21 @@ $(document).ready(function() {
   }
 
   function showSound(res) {
-    $('#results').prepend( res );
+    if ( $('#results').length == 0 ) {
+      showResults();
+    }
+
+    $('#results').prepend(res);
+  }
+
+  function showResults() {
+    $.ajax({
+      type: 'GET',
+      url: '/results',
+      async: false,
+      success: function(res) {
+        $('.content').after(res);
+      }
+    });
   }
 });

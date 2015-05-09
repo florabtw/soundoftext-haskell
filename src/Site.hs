@@ -131,6 +131,7 @@ routes :: [(B.ByteString, Handler App App ())]
 routes = [ ("/",           handleIndex)
          , ("/sounds",     handleSounds)
          , ("/sounds/:id", handleSound)
+         , ("/results",    render "results")
          , ("/static",     serveStatic)
          ]
 
