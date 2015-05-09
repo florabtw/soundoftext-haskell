@@ -1,4 +1,6 @@
 $(document).ready(function() {
+  $('option[value=en]').prop('selected', true);
+
   $('#submit-text').on('click', function(e) {
     e.preventDefault();
 

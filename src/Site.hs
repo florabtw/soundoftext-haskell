@@ -10,14 +10,14 @@ import Snap.Snaplet.Heist (heistInit, render, heistLocal)
 import Snap.Snaplet.SqliteSimple (sqliteInit, sqliteConn)
 import Heist ((##))
 import Heist.Interpreted (Splice)
-import Heist.Interpreted (runChildrenWithText, bindSplices)
+import Heist.Interpreted (runChildrenWithText, bindSplices, mapSplices)
 
 import Application (heist, db)
 import Application (App(..))
 import Database (Sound(..))
 import Database (createTables, getSoundById)
 import SoundManager (soundsDir, findSound)
-import Languages (lookupLanguage)
+import Languages (lookupLanguage, languagePairs)
 
 import Snap.Core (writeBS, method, getPostParam, finishWith, getParam)
 import Snap.Core (modifyResponse, setResponseStatus, setHeader, getResponse, dir)
@@ -29,6 +29,8 @@ import Control.Concurrent (withMVar)
 import Control.Lens ((^#))
 import Control.Monad (when)
 import Control.Monad.IO.Class (liftIO)
+import Data.Ord (comparing)
+import Data.List (sortBy)
 import Data.Maybe (isNothing, fromJust)
 import Data.String (fromString)
 import Text.JSON (toJSString, makeObj, encode)
@@ -75,7 +77,21 @@ soundSplice (Sound _ lang text path) =
           "text" ## T.pack text
           "path" ## T.pack ('/' : soundsDir ++ path)
 
+langSplice :: Monad m => (String, String) -> Splice m
+langSplice (key, name) =
+    runChildrenWithText splices
+    where
+        splices = do
+            "key"      ## T.pack key
+            "name"     ## T.pack name
+
 ------------------------------------------------------------------------------
+handleIndex :: Handler App App ()
+handleIndex = do
+    let sortedPairs = sortBy (comparing snd) languagePairs
+        splices = bindSplices $ "languages" ## mapSplices langSplice sortedPairs
+    heistLocal splices $ render "index"
+
 handleSounds :: Handler App App ()
 handleSounds =  method GET  indexSounds
             <|> method POST createSound
@@ -112,7 +128,7 @@ serveStatic =  dir "sounds"      (serveDirectory soundsDir)
            <|> dir "js"          (serveDirectory "static/js")
 
 routes :: [(B.ByteString, Handler App App ())]
-routes = [ ("/",           render "index")
+routes = [ ("/",           handleIndex)
          , ("/sounds",     handleSounds)
          , ("/sounds/:id", handleSound)
          , ("/static",     serveStatic)
