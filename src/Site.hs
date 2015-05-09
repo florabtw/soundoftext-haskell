@@ -30,9 +30,10 @@ import Control.Concurrent (withMVar)
 import Control.Lens ((^#))
 import Control.Monad (when)
 import Control.Monad.IO.Class (liftIO)
-import Data.Ord (comparing)
+import Data.Char (toLower)
 import Data.List (sortBy)
 import Data.Maybe (isNothing, fromJust)
+import Data.Ord (comparing)
 import Data.String (fromString)
 import System.FilePath ((</>), takeFileName)
 import Text.JSON (toJSString, makeObj, encode)
@@ -87,8 +88,8 @@ langSplice (key, name) =
     runChildrenWithText splices
     where
         splices = do
-            "key"      ## T.pack key
-            "name"     ## T.pack name
+            "key"  ## T.pack key
+            "name" ## T.pack name
 
 ------------------------------------------------------------------------------
 handleIndex :: Handler App App ()
@@ -107,11 +108,13 @@ indexSounds = undefined
 createSound :: Handler App App ()
 createSound = do
     modifyResponse $ setHeader "Content-Type" "application/json"
-    lang <- getPostParam "lang"
-    text <- getPostParam "text"
-    when (isNothing lang) $ finishEarly 400 "Parameter 'lang' missing!"
-    when (isNothing text) $ finishEarly 400 "Parameter 'text' missing!"
-    sound <- findSound (fromJust lang) (fromJust text)
+    mLang <- getPostParam "lang"
+    mText <- getPostParam "text"
+    when (isNothing mLang) $ finishEarly 400 "Parameter 'lang' missing!"
+    when (isNothing mText) $ finishEarly 400 "Parameter 'text' missing!"
+    let lang = toString $ fromJust mLang
+        text = map toLower . toString $ fromJust mText
+    sound <- findSound lang text
     when (isNothing sound) $ finishEarly 400 "Unable to retrieve sound!"
     writeBS . fromString . createSoundSuccessJSON $ fromJust sound
 

@@ -4,7 +4,6 @@ $(document).ready(function() {
 
   $('body').on('click', 'button.play', function() {
     var audio = $(this).siblings('audio');
-    audio.trigger('load');
     audio.trigger('play');
   });
 

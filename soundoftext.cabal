@@ -39,7 +39,8 @@ Executable soundoftext
     transformers              >= 0.3   && < 0.4,
     text                      >= 1.1   && < 1.2,
     json                      >= 0.9   && < 0.10,
-    containers                >= 0.5   && < 0.6
+    containers                >= 0.5   && < 0.6,
+    HTTP                      >= 4000  && < 5000
 
   if flag(development)
     build-depends:

@@ -10,6 +10,7 @@ import Application (db)
 
 import Snap.Snaplet (Handler, withTop)
 
+import Network.HTTP.Base (urlEncode)
 import Network.HTTP.Client (httpLbs, newManager, defaultManagerSettings)
 import Network.HTTP.Client (parseUrl, responseBody)
 import Network.HTTP.Client (Manager)
@@ -17,9 +18,6 @@ import System.FilePath ((</>), (<.>))
 import System.Directory (createDirectoryIfMissing)
 import Control.Monad.IO.Class (liftIO)
 import qualified Data.ByteString.Lazy as L
-import qualified Data.ByteString as B
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as E
 
 soundsDir :: String
 soundsDir = "static/sounds"
@@ -33,13 +31,11 @@ rootUrl = "http://translate.google.com/translate_tts?ie=UTF-8"
 cManager :: IO Manager
 cManager = newManager defaultManagerSettings
 
-findSound :: B.ByteString -> B.ByteString -> Handler App App (Maybe Sound)
+findSound :: String -> String-> Handler App App (Maybe Sound)
 findSound lang text = do
-    let langString = toString lang
-        textString = toString text
-    sounds <- withTop db $ getSoundByLangTextPair langString textString
+    sounds <- withTop db $ getSoundByLangTextPair lang text
     if null sounds
-        then createSound langString textString
+        then createSound lang text
         else return . Just $ head sounds
 
 createSound :: String -> String -> Handler App App (Maybe Sound)
@@ -57,20 +53,23 @@ downloadSound lang text = do
     req <- parseUrl url
     man <- cManager
     res <- httpLbs req man
-    let absPath = makeAbsSoundPath lang text
-        relPath = makeRelSoundPath lang text
+    let pathText = urlEncode $ map toFilePath text
+        absPath  = makeAbsSoundPath lang pathText
+        relPath  = makeRelSoundPath lang pathText
     createDirectoryIfMissing True $ soundsDir </> lang
     L.writeFile absPath $ responseBody res
     return relPath
+
+toFilePath :: Char -> Char
+toFilePath ' ' = '_'
+toFilePath '/' = '-'
+toFilePath c   = c
 
 makeAbsSoundPath :: String -> String -> String
 makeAbsSoundPath lang text = soundsDir </> makeRelSoundPath lang text
 
 makeRelSoundPath :: String -> String -> String
 makeRelSoundPath lang text = lang </> text <.> soundsExt
-
-toString :: B.ByteString -> String
-toString = T.unpack . E.decodeUtf8
 
 addParam :: String -> String -> String -> String
 addParam k v s = s ++ "&" ++ k ++ "=" ++ v
