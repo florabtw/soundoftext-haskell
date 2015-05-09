@@ -1,5 +1,6 @@
 $(document).ready(function() {
   $('option[value=en]').prop('selected', true);
+  $('input[name=text]').focus();
 
   $('body').on('click', 'button.play', function() {
     var audio = $(this).siblings('audio');
@@ -22,6 +23,8 @@ $(document).ready(function() {
       data: data,
       success: loadResult
     });
+
+    $('input[name=text]').val('');
   });
 
   function loadResult(res) {
