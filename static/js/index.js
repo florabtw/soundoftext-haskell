@@ -1,6 +1,12 @@
 $(document).ready(function() {
   $('option[value=en]').prop('selected', true);
 
+  $('body').on('click', 'button.play', function() {
+    var audio = $(this).siblings('audio');
+    audio.trigger('load');
+    audio.trigger('play');
+  });
+
   $('#submit-text').on('click', function(e) {
     e.preventDefault();
 
@@ -33,19 +39,19 @@ $(document).ready(function() {
 
   function showSound(res) {
     if ( $('#results').length == 0 ) {
-      showResults();
+      showResults(res);
+    } else {
+      $('#results').prepend(res);
     }
-
-    $('#results').prepend(res);
   }
 
-  function showResults() {
+  function showResults(child) {
     $.ajax({
       type: 'GET',
       url: '/results',
-      async: false,
       success: function(res) {
         $('.content').after(res);
+        $('#results').prepend(child);
       }
     });
   }

@@ -5,8 +5,11 @@
     <div class="result-lang"><lang /></div>
   </div>
   <div class="result-actions">
-    <button>Play</button>
-    <button>Save</button>
+    <audio>
+        <source src="${path}" type="audio/mpeg" />
+    </audio>
+    <button class="play">Play</button>
+    <button class="save">Save</button>
   </div>
 </li>
 </sound>

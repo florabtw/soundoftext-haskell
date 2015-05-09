@@ -33,6 +33,7 @@ import Data.Ord (comparing)
 import Data.List (sortBy)
 import Data.Maybe (isNothing, fromJust)
 import Data.String (fromString)
+import System.FilePath ((</>))
 import Text.JSON (toJSString, makeObj, encode)
 import Text.JSON (JSValue(..))
 
@@ -75,7 +76,7 @@ soundSplice (Sound _ lang text path) =
         splices = do
           "lang" ## T.pack (lookupLanguage lang)
           "text" ## T.pack text
-          "path" ## T.pack ('/' : soundsDir ++ path)
+          "path" ## T.pack ('/' : soundsDir </> path)
 
 langSplice :: Monad m => (String, String) -> Splice m
 langSplice (key, name) =
