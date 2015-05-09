@@ -19,10 +19,11 @@ import Database (createTables, getSoundById)
 import SoundManager (soundsDir, findSound)
 import Languages (lookupLanguage, languagePairs)
 
-import Snap.Core (writeBS, method, getPostParam, finishWith, getParam)
-import Snap.Core (modifyResponse, setResponseStatus, setHeader, getResponse, dir)
+import Snap.Core (writeBS, method, getPostParam, finishWith, getParam, dir)
+import Snap.Core (modifyResponse, setResponseStatus, setHeader, getResponse)
+import Snap.Core (rqPathInfo, getRequest)
 import Snap.Core (Method(..), MonadSnap)
-import Snap.Util.FileServe (serveDirectory)
+import Snap.Util.FileServe (serveDirectory, serveFile)
 
 import Control.Applicative ((<|>))
 import Control.Concurrent (withMVar)
@@ -33,7 +34,7 @@ import Data.Ord (comparing)
 import Data.List (sortBy)
 import Data.Maybe (isNothing, fromJust)
 import Data.String (fromString)
-import System.FilePath ((</>))
+import System.FilePath ((</>), takeFileName)
 import Text.JSON (toJSString, makeObj, encode)
 import Text.JSON (JSValue(..))
 
@@ -67,6 +68,9 @@ finishEarly code str = do
 
 toString :: B.ByteString -> String
 toString = T.unpack . E.decodeUtf8
+
+toBS :: String -> B.ByteString
+toBS = E.encodeUtf8 . T.pack
 
 ------------------------------------------------------------------------------
 soundSplice :: Monad m => Sound -> Splice m
@@ -124,9 +128,17 @@ showSound = do
     heistLocal splices $ render "sound"
 
 serveStatic :: Handler App App ()
-serveStatic =  dir "sounds"      (serveDirectory soundsDir)
+serveStatic =  dir "sounds"      serveSound
            <|> dir "stylesheets" (serveDirectory "static/stylesheets")
            <|> dir "js"          (serveDirectory "static/js")
+
+serveSound :: Handler App App ()
+serveSound = do
+    request <- getRequest
+    let relPath     = toString $ rqPathInfo request
+        disposition = toBS $ "attachment; filename=" ++ takeFileName relPath
+    modifyResponse $ setHeader "Content-Disposition" disposition
+    serveFile $ soundsDir </> relPath
 
 routes :: [(B.ByteString, Handler App App ())]
 routes = [ ("/",           handleIndex)

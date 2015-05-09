@@ -9,7 +9,7 @@
         <source src="${path}" type="audio/mpeg" />
     </audio>
     <button class="play">Play</button>
-    <button class="save">Save</button>
+    <button class="save" data-sound="${path}">Save</button>
   </div>
 </li>
 </sound>

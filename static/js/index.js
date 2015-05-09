@@ -7,6 +7,10 @@ $(document).ready(function() {
     audio.trigger('play');
   });
 
+  $('body').on('click', 'button.save', function() {
+    window.open( $(this).data('sound'), '_blank' );
+  });
+
   $('#submit-text').on('click', function(e) {
     e.preventDefault();
 
