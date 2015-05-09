@@ -5,17 +5,21 @@ module Site
 ) where
 
 import Snap.Snaplet (Handler, SnapletInit)
-import Snap.Snaplet (makeSnaplet, nestSnaplet, addRoutes, snapletValue)
-import Snap.Snaplet.Heist (heistInit, render)
+import Snap.Snaplet (makeSnaplet, nestSnaplet, addRoutes, snapletValue, withTop)
+import Snap.Snaplet.Heist (heistInit, render, heistLocal)
 import Snap.Snaplet.SqliteSimple (sqliteInit, sqliteConn)
+import Heist ((##))
+import Heist.Interpreted (Splice)
+import Heist.Interpreted (runChildrenWithText, bindSplices)
 
 import Application (heist, db)
 import Application (App(..))
 import Database (Sound(..))
-import Database (createTables)
+import Database (createTables, getSoundById)
 import SoundManager (soundsDir, findSound)
+import Languages (lookupLanguage)
 
-import Snap.Core (writeBS, method, getPostParam, finishWith)
+import Snap.Core (writeBS, method, getPostParam, finishWith, getParam)
 import Snap.Core (modifyResponse, setResponseStatus, addHeader, getResponse, dir)
 import Snap.Core (Method(..), MonadSnap)
 import Snap.Util.FileServe (serveDirectory)
@@ -62,6 +66,16 @@ toString :: B.ByteString -> String
 toString = T.unpack . E.decodeUtf8
 
 ------------------------------------------------------------------------------
+soundSplice :: Monad m => Sound -> Splice m
+soundSplice (Sound _ lang text path) =
+    runChildrenWithText splices
+      where
+        splices = do
+          "lang" ## T.pack (lookupLanguage lang)
+          "text" ## T.pack text
+          "path" ## T.pack ('/' : soundsDir ++ path)
+
+------------------------------------------------------------------------------
 handleSounds :: Handler App App ()
 handleSounds =  method GET  indexSounds
             <|> method POST createSound
@@ -79,14 +93,27 @@ createSound = do
     when (isNothing sound) $ finishEarly 400 "Unable to retrieve sound!"
     writeBS . fromString . createSoundSuccessJSON $ fromJust sound
 
+handleSound :: Handler App App ()
+handleSound = method GET showSound
+
+showSound :: Handler App App ()
+showSound = do
+    sId <- getParam "id"
+    when (isNothing sId) $ finishEarly 400 "Sound id is incorrect!"
+    sound <- withTop db (getSoundById . read . toString $ fromJust sId)
+    when (null sound) $ finishEarly 400 "No sound found with that id!"
+    let splices = bindSplices $ "sound" ## soundSplice (head sound)
+    heistLocal splices $ render "sound"
+
 serveStatic :: Handler App App ()
 serveStatic =  dir "sounds"      (serveDirectory soundsDir)
            <|> dir "stylesheets" (serveDirectory "static/stylesheets")
 
 routes :: [(B.ByteString, Handler App App ())]
-routes = [ ("/",       render "index")
-         , ("/sounds", handleSounds)
-         , ("/static", serveStatic)
+routes = [ ("/",            render "index")
+         , ("/sounds",     handleSounds)
+         , ("/sounds/:id", handleSound)
+         , ("/static",     serveStatic)
          ]
 
 app :: SnapletInit App App

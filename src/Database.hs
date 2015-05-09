@@ -3,8 +3,9 @@
 module Database
 ( Sound(..)
 , createTables
-, saveSound
 , getSoundByLangTextPair
+, getSoundById
+, saveSound
 ) where
 
 import Application (App(..))
@@ -50,6 +51,10 @@ createTables conn = do
 getSoundByLangTextPair :: String -> String -> Handler App Sqlite [Sound]
 getSoundByLangTextPair lang text =
     query "SELECT id,lang,text,path FROM sounds WHERE lang = ? AND text = ? " (lang, text)
+
+getSoundById :: Int -> Handler App Sqlite [Sound]
+getSoundById sId =
+    query "SELECT id,lang,text,path FROM sounds WHERE id = ?" (Only sId)
 
 saveSound :: String -> String -> String -> Handler App Sqlite ()
 saveSound l t p =
