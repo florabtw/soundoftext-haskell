@@ -85,6 +85,7 @@ li.result {
 .outer {
   height: 100%;
   display: flex;
+  display: -webkit-flex;
   overflow-y: auto;
 }
 
@@ -112,9 +113,13 @@ li.result {
 
 .result {
   display: flex;
+  display: -webkit-flex;
   flex-direction: row;
+  -webkit-flex-direction: row;
   justify-content: space-between;
+  -webkit-justify-content: space-between;
   align-items: flex-start;
+  -webkit-align-items: flex-start;
   border-top: 1px solid #ddd;
 }
 
@@ -181,8 +186,11 @@ li.result {
 
   form {
     display: flex;
+    display: -webkit-flex;
     justify-content: space-between;
+    -webkit-justify-content: space-between;
     align-items: flex-start;
+    -webkit-align-items: flex-start;
     width: 100%;
   }
 
