@@ -94,7 +94,7 @@ handleIndex :: Handler App App ()
 handleIndex = do
     let sortedPairs = sortBy (comparing snd) languagePairs
         splices = bindSplices $ "languages" ## mapSplices langSplice sortedPairs
-    heistLocal splices $ render "index"
+    heistLocal splices $ render "soundoftext"
 
 handleSounds :: Handler App App ()
 handleSounds =  method GET  indexSounds
