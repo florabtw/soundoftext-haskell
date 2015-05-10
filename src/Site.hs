@@ -36,7 +36,7 @@ import Data.Maybe (isNothing, fromJust)
 import Data.Ord (comparing)
 import Data.String (fromString)
 import System.FilePath ((</>), takeFileName)
-import Text.JSON (toJSString, makeObj, encode)
+import Text.JSON (makeObj, encode)
 import Text.JSON (JSValue(..))
 
 import qualified Data.ByteString as B
@@ -52,19 +52,11 @@ createSoundSuccessJSON sound =
                        ]
     in  encode $ makeObj object
 
-errorJSON :: String -> String
-errorJSON m =
-    let messageJSString = toJSString m
-        object          = [ ("success", JSBool False)
-                          , ("message", JSString messageJSString)
-                          ]
-    in encode $ makeObj object
-
 finishEarly :: (MonadSnap m) => Int -> B.ByteString -> m b
 finishEarly code str = do
-    modifyResponse $ setHeader "Content-Type" "application/json"
+    modifyResponse $ setHeader "Content-Type" "text/plain"
     modifyResponse $ setResponseStatus code str
-    writeBS . fromString . errorJSON $ toString str
+    writeBS str
     getResponse >>= finishWith
 
 toString :: B.ByteString -> String
@@ -113,7 +105,6 @@ indexSounds = undefined
 
 createSound :: Handler App App ()
 createSound = do
-    modifyResponse $ setHeader "Content-Type" "application/json"
     mLang <- getPostParam "lang"
     mText <- getPostParam "text"
     when (isNothing mLang) $ finishEarly 400 "Parameter 'lang' missing!"
@@ -122,6 +113,7 @@ createSound = do
         text = standardizeText . toString $ fromJust mText
     sound <- findSound lang text
     when (isNothing sound) $ finishEarly 400 "Unable to retrieve sound!"
+    modifyResponse $ setHeader "Content-Type" "application/json"
     writeBS . fromString . createSoundSuccessJSON $ fromJust sound
 
 handleSound :: Handler App App ()

@@ -40,17 +40,23 @@ $(document).ready(function() {
       type: 'POST',
       url: '/sounds',
       data: data,
-      success: loadResult
+      success: loadResult,
+      error: function() {
+        showError( 'Unable to create that sound. '
+                 + 'Please send me and email if this continues to occur.'
+                 );
+      }
     });
 
+    // clear input box
     $('input[name=text]').val('');
+    $('input[name=text]').keyup(); // satisfy isHappy
   });
 
   function loadResult(res) {
     if (res.success) {
       getSound(res.id);
     } else {
-      // handle error
       console.log("Error occurred creating sound");
     }
   }
@@ -59,7 +65,12 @@ $(document).ready(function() {
     $.ajax({
       type: 'GET',
       url: '/sounds/' + id,
-      success: showSound
+      success: showSound,
+      error: function() {
+        showError( 'Unable to retrieve sound. '
+                 + 'Please send me an email if this continues to occur.'
+                 );
+      }
     });
   }
 
@@ -78,7 +89,23 @@ $(document).ready(function() {
       success: function(res) {
         $('.content').after(res);
         $('#results').prepend(child);
+      },
+      error: function() {
+        showError( 'Something really bad happened. '
+                 + 'You should probably reload the page. '
+                 + 'Please send me an email if this continues to occur.'
+                 );
       }
+    });
+  }
+
+  function showError(text) {
+    noty({
+      layout: 'top',
+      theme: 'relax',
+      type: 'error',
+      text: text,
+      killer: true
     });
   }
 });

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="/static/js/happy.js"></script>
+    <script src="/static/js/jquery.noty.packaged.min.js"></script>
     <script src="/static/js/index.js"></script>
     <link rel="stylesheet" href="/static/stylesheets/index.css">
   </head>
