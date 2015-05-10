@@ -40,6 +40,19 @@
             </div>
           </form>
         </div>
+        <div class="links">
+          <a href="mailto:nick.c.pierson@gmail.com">
+            nick.c.pierson@gmail.com
+          </a>
+          |
+          <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TTRBWFEKUSRSU">
+            donate via paypal
+          </a>
+          |
+          <a href="http://coinbase.com/ncpierson">
+            donate via bitcoin
+          </a>
+        </div>
       </div>
     </div>
   </body>

@@ -13,6 +13,11 @@ h1,h2,h3,h4,h5,h6 {
   color: #1A6868;
 }
 
+a {
+  text-decoration: none;
+  color: #1A6868;
+}
+
 input[type=text], select {
   box-sizing: border-box;
   display: block;
@@ -133,6 +138,13 @@ li.result {
 .result-lang {
   font-size: .8em;
   color: #666666;
+}
+
+.links {
+  padding: 0 10px;
+  margin-bottom: 5px;
+  font-size: .8em;
+  color: #1A6868;
 }
 
 .unhappyMessage {
