@@ -141,12 +141,16 @@ serveSound = do
     modifyResponse $ setHeader "Content-Disposition" disposition
     serveFile $ soundsDir </> relPath
 
+notFound :: Handler App App ()
+notFound = finishEarly 404 "Page cannot be found!"
+
 routes :: [(B.ByteString, Handler App App ())]
 routes = [ ("/",           handleIndex)
          , ("/sounds",     handleSounds)
          , ("/sounds/:id", handleSound)
          , ("/results",    render "results")
          , ("/static",     serveStatic)
+         , ("/:any",       notFound)
          ]
 
 app :: SnapletInit App App
