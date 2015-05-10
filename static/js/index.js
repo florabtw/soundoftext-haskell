@@ -2,6 +2,21 @@ $(document).ready(function() {
   $('option[value=en]').prop('selected', true);
   $('input[name=text]').focus();
 
+  $('#sound-form').isHappy({
+    fields: {
+      '#input-text': {
+        message: 'Input is over 100 characters! It will be truncated.',
+        test: validateLength,
+        trim: false,
+        when: 'input keyup'
+      },
+    }
+  });
+
+  function validateLength(text) {
+    return text.length <= 100;
+  }
+
   $('body').on('click', 'button.play', function() {
     var audio = $(this).siblings('audio');
     audio.trigger('play');
@@ -13,6 +28,11 @@ $(document).ready(function() {
 
   $('#submit-text').on('click', function(e) {
     e.preventDefault();
+
+    if ( $('#input-text').val().length == 0) {
+      // don't submit if input text is empty
+      return false;
+    }
 
     var data = $('.content form').serialize();
 

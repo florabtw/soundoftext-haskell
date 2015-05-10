@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/static/js/happy.js"></script>
     <script src="/static/js/index.js"></script>
     <link rel="stylesheet" href="/static/stylesheets/index.css">
   </head>
@@ -20,10 +21,10 @@
             <a href="https://translate.google.com">Google Translate</a>.
             Simply type what you want to hear - up to 100 characters - and hit submit.
           </p>
-          <form action="/sounds" method="post">
+          <form id="sound-form" action="/sounds" method="post">
             <div class="field">
               <label for="text">Text:</label>
-              <input name="text" type="text" />
+              <input id="input-text" name="text" type="text" />
             </div>
             <div class="field">
               <label for="lang">Language:</label>

@@ -73,6 +73,12 @@ toString = T.unpack . E.decodeUtf8
 toBS :: String -> B.ByteString
 toBS = E.encodeUtf8 . T.pack
 
+-- Ensure all text input is:
+--   100 characters or fewer (for Google Translate)
+--   lowercase
+standardizeText :: String -> String
+standardizeText = map toLower . take 100
+
 ------------------------------------------------------------------------------
 soundSplice :: Monad m => Sound -> Splice m
 soundSplice (Sound _ lang text path) =
@@ -113,7 +119,7 @@ createSound = do
     when (isNothing mLang) $ finishEarly 400 "Parameter 'lang' missing!"
     when (isNothing mText) $ finishEarly 400 "Parameter 'text' missing!"
     let lang = toString $ fromJust mLang
-        text = map toLower . toString $ fromJust mText
+        text = standardizeText . toString $ fromJust mText
     sound <- findSound lang text
     when (isNothing sound) $ finishEarly 400 "Unable to retrieve sound!"
     writeBS . fromString . createSoundSuccessJSON $ fromJust sound

@@ -142,6 +142,11 @@ li.result {
   color: #666666;
 }
 
+.unhappyMessage {
+  font-size: .8em;
+  color: #F00;
+}
+
 @media (max-width: 400px) {
   .result-content {
     width: 45%;
