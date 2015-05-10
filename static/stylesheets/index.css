@@ -106,13 +106,7 @@ li.result {
 .results-header h1 {
   margin-bottom: 0;
   padding-bottom: 0;
-}
-
-.results-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-end;
+  text-align: center;
 }
 
 .result {
@@ -122,7 +116,6 @@ li.result {
   align-items: flex-start;
   border-top: 1px solid #ddd;
 }
-
 
 .result-text {
   word-wrap: break-word;
