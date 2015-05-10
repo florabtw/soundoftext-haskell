@@ -77,7 +77,7 @@ li.result {
 
 .wrapped {
   margin: 5px;
-  padding: 0 10px;
+  padding: 5px 10px;
   background: #FFF;
   border-radius: 5px;
 }
@@ -90,10 +90,6 @@ li.result {
 }
 
 .inner {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
   margin: auto;
 }
 
@@ -110,8 +106,8 @@ li.result {
 }
 
 .results-header h1 {
-  margin-bottom: 0;
-  padding-bottom: 0;
+  margin: 0px;
+  padding: 0px;
   text-align: center;
 }
 
@@ -180,10 +176,6 @@ li.result {
 }
 
 @media (min-width: 651px) {
-  .container {
-    align-items: center;
-  }
-
   .wrapped {
     width: 600px;
   }
