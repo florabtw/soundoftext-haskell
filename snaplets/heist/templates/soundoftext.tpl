@@ -17,6 +17,9 @@
       ga('send', 'pageview');
     </script>
     <link rel="stylesheet" href="/static/stylesheets/index.css">
+    <!--[if IE 9]>
+    <link rel="stylesheet" href="/static/stylesheets/ie.css">
+    <![endif]-->
   </head>
   <body>
     <div class="outer">

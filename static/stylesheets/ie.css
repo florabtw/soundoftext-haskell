@@ -1,0 +1,27 @@
+.result {
+  display: block;
+}
+
+.result-content {
+  display: inline-block;
+}
+
+.result-actions {
+  display: inline-block;
+  vertical-align: top;
+}
+
+@media (min-width: 651px) {
+  form {
+    display: block;
+  }
+
+  .field {
+    display: inline-block;
+  }
+
+  .field input,select {
+    display: inline-block;
+    line-height: 1em;
+  }
+}

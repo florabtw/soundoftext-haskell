@@ -75,13 +75,6 @@ li.result {
   padding: 10px 0;
 }
 
-.wrapped {
-  margin: 5px;
-  padding: 5px 10px;
-  background: #FFF;
-  border-radius: 5px;
-}
-
 .outer {
   height: 100%;
   display: flex;
@@ -91,6 +84,14 @@ li.result {
 
 .inner {
   margin: auto;
+  padding: 10px 0;
+}
+
+.wrapped {
+  margin: 5px;
+  padding: 5px 10px;
+  background: #FFF;
+  border-radius: 5px;
 }
 
 .field {
@@ -180,8 +181,12 @@ li.result {
 }
 
 @media (min-width: 651px) {
-  .wrapped {
+  .inner {
     width: 600px;
+  }
+
+  .wrapped {
+    width: 100%;
   }
 
   form {
