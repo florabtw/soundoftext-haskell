@@ -20,6 +20,9 @@
     <!--[if IE 9]>
     <link rel="stylesheet" href="/static/stylesheets/ie.css">
     <![endif]-->
+    <!--[if lte IE 8]>
+    <script src="/static/js/nosupport.js"></script>
+    <![endif]-->
   </head>
   <body>
     <div class="outer">
