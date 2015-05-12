@@ -3,6 +3,16 @@
 Sound of Text gives you the ability to listen to or download audio clips generated from Google Translate
 directly from your browser.
 
+## Tech Stack
+
+- Haskell
+- [Snap](http://snapframework.com/) - web framework
+- [Heist](https://github.com/snapframework/heist) - templating engine
+- [Snaplet Sqlite Simple](https://github.com/nurpax/snaplet-sqlite-simple) - SQLite interaction
+- [jQuery](https://jquery.com/)
+- [HappyJS](http://happyjs.com/) - form validation
+- [Noty](http://ned.im/noty/#/about) - popup notifications
+
 ## Execution Instructions
 
 ### Environment setup
@@ -25,7 +35,7 @@ If you don't have more than 512MB memory, [this StackOverflow link might be help
 (http://stackoverflow.com/questions/20769183/cabal-update-failed-due-to-out-of-memory).
 
     $ cd soundoftext
-    $ cabal init sandbox
+    $ cabal sandbox init
     $ cabal install --only-dependencies
     $ cabal build
     $ cabal install
