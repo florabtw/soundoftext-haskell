@@ -181,12 +181,8 @@ li.result {
 }
 
 @media (min-width: 651px) {
-  .inner {
-    width: 600px;
-  }
-
   .wrapped {
-    width: 100%;
+    width: 600px;
   }
 
   form {
