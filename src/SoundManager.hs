@@ -49,11 +49,12 @@ createSound lang text = do
 
 downloadSound :: String -> String -> IO String
 downloadSound lang text = do
-    let url = addTextParam text . addLangParam lang $ rootUrl
+    let encodedText = urlEncode text
+        url         = addTextParam encodedText . addLangParam lang $ rootUrl
     req <- parseUrl url
     man <- cManager
     res <- httpLbs req man
-    let pathText = urlEncode $ map toFilePath text
+    let pathText = map toFilePath text
         absPath  = makeAbsSoundPath lang pathText
         relPath  = makeRelSoundPath lang pathText
     createDirectoryIfMissing True $ soundsDir </> lang

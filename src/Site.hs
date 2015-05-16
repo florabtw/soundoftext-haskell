@@ -35,7 +35,8 @@ import Data.List (sortBy)
 import Data.Maybe (isNothing, fromJust)
 import Data.Ord (comparing)
 import Data.String (fromString)
-import System.FilePath ((</>), takeFileName)
+import Network.HTTP.Base (urlDecode, urlEncode)
+import System.FilePath ((</>), takeFileName, dropFileName)
 import Text.JSON (makeObj, encode)
 import Text.JSON (JSValue(..))
 
@@ -76,10 +77,11 @@ soundSplice :: Monad m => Sound -> Splice m
 soundSplice (Sound _ lang text path) =
     runChildrenWithText splices
       where
-        splices = do
+        encodedPath = (dropFileName path) </> (urlEncode $ takeFileName path)
+        splices     = do
           "lang" ## T.pack (lookupLanguage lang)
           "text" ## T.pack text
-          "path" ## T.pack ('/' : soundsDir </> path)
+          "path" ## T.pack ('/' : soundsDir </> encodedPath)
 
 langSplice :: Monad m => (String, String) -> Splice m
 langSplice (key, name) =
@@ -136,7 +138,7 @@ serveStatic =  dir "sounds"      serveSound
 serveSound :: Handler App App ()
 serveSound = do
     request <- getRequest
-    let relPath     = toString $ rqPathInfo request
+    let relPath     = urlDecode . toString $ rqPathInfo request
         disposition = toBS $ "attachment; filename=" ++ takeFileName relPath
     modifyResponse $ setHeader "Content-Disposition" disposition
     serveFile $ soundsDir </> relPath
