@@ -55,8 +55,8 @@
           </form>
         </div>
         <div class="links">
-          <a href="mailto:nick.c.pierson@gmail.com">
-            nick.c.pierson@gmail.com
+          <a href="mailto:nick@nickpierson.me">
+            nick@nickpierson.me
           </a>
           |
           <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TTRBWFEKUSRSU">
